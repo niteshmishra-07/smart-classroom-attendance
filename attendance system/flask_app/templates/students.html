@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}Students · Smart Attendance{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Students</h1>
+    <p class="muted">{{ rows|length }} enrolled · {{ total_sessions }} session{{ 's' if total_sessions != 1 else '' }}</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('enroll', class_id=current_class_id) }}">+ Enroll student</a>
+</header>
+
+{% if rows %}
+<div class="grid student-grid">
+  {% for r in rows %}
+    <div class="student-card {% if r.low %}low{% endif %}">
+      <div class="student-photo">
+        <img src="{{ url_for('serve_student_photo', filename=r.student.photo_filename) }}" alt="{{ r.student.name }}" />
+        {% if r.low %}<span class="badge badge-warn">Low {{ r.percent }}%</span>{% endif %}
+      </div>
+      <div class="student-body">
+        <div class="student-name">{{ r.student.name }}</div>
+        <div class="student-meta">
+          {% if r.student.roll_number %}{{ r.student.roll_number }} · {% endif %}
+          {{ r.present }}/{{ r.total }} present
+        </div>
+        <div class="bar"><span style="width: {{ r.percent }}%"></span></div>
+        <div class="student-foot">
+          <span class="muted">{{ r.percent }}% attendance</span>
+          <form method="post" action="{{ url_for('delete_student', student_id=r.student.id) }}"
+                onsubmit="return confirm('Remove {{ r.student.name }}?');">
+            <button class="btn-link danger" type="submit">Remove</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  {% endfor %}
+</div>
+{% else %}
+  <div class="empty">
+    <p>No students enrolled for this class yet.</p>
+    <a class="btn btn-primary" href="{{ url_for('enroll', class_id=current_class_id) }}">Enroll the first student</a>
+  </div>
+{% endif %}
+{% endblock %}

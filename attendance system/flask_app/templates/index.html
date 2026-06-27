@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}Dashboard · Smart Attendance{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Dashboard</h1>
+    <p class="muted">Overview of the current class.</p>
+  </div>
+  <a class="btn btn-primary" href="{{ url_for('attendance', class_id=current_class_id) }}">
+    Take attendance →
+  </a>
+</header>
+
+<div class="stat-grid">
+  <div class="stat-card">
+    <div class="stat-label">Students enrolled</div>
+    <div class="stat-value">{{ student_count }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="stat-label">Sessions recorded</div>
+    <div class="stat-value">{{ session_count }}</div>
+  </div>
+  <div class="stat-card warn">
+    <div class="stat-label">Below 75%</div>
+    <div class="stat-value">{{ low_count }}</div>
+  </div>
+</div>
+
+<section class="card">
+  <h2>Recent sessions</h2>
+  {% if recent_sessions %}
+    <table class="table">
+      <thead>
+        <tr><th>Date</th><th>Time</th><th>Present / Total</th><th></th></tr>
+      </thead>
+      <tbody>
+        {% for s in recent_sessions %}
+          {% set p = s.records|selectattr('status','equalto','Present')|list|length %}
+          <tr>
+            <td>{{ s.created_at.strftime('%Y-%m-%d') }}</td>
+            <td>{{ s.created_at.strftime('%H:%M') }}</td>
+            <td><span class="pill pill-present">{{ p }}</span> / {{ s.records|length }}</td>
+            <td><a class="link" href="{{ url_for('attendance_csv', session_id=s.id) }}">Download CSV</a></td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% else %}
+    <p class="muted">No sessions yet. Take your first attendance to see it here.</p>
+  {% endif %}
+</section>
+{% endblock %}

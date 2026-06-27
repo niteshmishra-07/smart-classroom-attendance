@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}History · Smart Attendance{% endblock %}
+{% block content %}
+<header class="page-head">
+  <div>
+    <h1>Attendance history</h1>
+    <p class="muted">Filter by date or student name.</p>
+  </div>
+</header>
+
+<form class="filters card" method="get">
+  <input type="hidden" name="class_id" value="{{ current_class_id }}" />
+  <label>
+    <span>Date</span>
+    <input type="date" name="date" value="{{ q_date }}" />
+  </label>
+  <label>
+    <span>Student name</span>
+    <input type="text" name="name" placeholder="Search…" value="{{ q_name }}" />
+  </label>
+  <div class="filter-actions">
+    <button class="btn btn-primary" type="submit">Apply</button>
+    <a class="btn btn-ghost" href="{{ url_for('history', class_id=current_class_id) }}">Reset</a>
+  </div>
+</form>
+
+{% if rows %}
+  {% for row in rows %}
+    <section class="card history-session">
+      <header class="hs-head">
+        <div>
+          <h3>{{ row.session.created_at.strftime('%A, %d %b %Y') }}</h3>
+          <p class="muted">{{ row.session.created_at.strftime('%H:%M') }} · {{ row.session.classroom.name }}</p>
+        </div>
+        <div class="hs-summary">
+          <span class="pill pill-present">{{ row.present }} present</span>
+          <span class="pill pill-absent">{{ row.total - row.present }} absent</span>
+          <a class="btn btn-sm" href="{{ url_for('attendance_csv', session_id=row.session.id) }}">CSV</a>
+        </div>
+      </header>
+      <table class="table">
+        <thead><tr><th>Student</th><th>Roll</th><th>Status</th><th>Confidence</th></tr></thead>
+        <tbody>
+          {% for r in row.records %}
+            <tr>
+              <td>{{ r.student.name }}</td>
+              <td>{{ r.student.roll_number or '—' }}</td>
+              <td>
+                {% if r.status == 'Present' %}
+                  <span class="pill pill-present">Present</span>
+                {% else %}
+                  <span class="pill pill-absent">Absent</span>
+                {% endif %}
+              </td>
+              <td>{{ (r.confidence * 100)|round(0, 'floor')|int if r.confidence else '—' }}{{ '%' if r.confidence else '' }}</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </section>
+  {% endfor %}
+{% else %}
+  <div class="empty">
+    <p>No attendance records match these filters.</p>
+  </div>
+{% endif %}
+{% endblock %}

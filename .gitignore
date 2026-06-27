@@ -1,0 +1,12 @@
+tfenv/
+myenv/
+__pycache__/
+*.pyc
+data/students/
+data/sessions/
+test_images/known_faces/
+models/
+*.jpg
+*.png
+outputs/
+.env
