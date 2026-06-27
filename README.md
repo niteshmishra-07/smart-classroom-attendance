@@ -2,11 +2,12 @@
 
 > Multi-Angle Face Recognition with Super-Resolution for Automated Classroom Attendance
 
-![Python]
-![Flask]
-![OpenCV]
-![SQLite]
-![Status]
+![Python](https://img.shields.io/badge/Python-3.8+-blue?style=for-the-badge&logo=python)
+![Flask](https://img.shields.io/badge/Flask-2.0+-black?style=for-the-badge&logo=flask)
+![OpenCV](https://img.shields.io/badge/OpenCV-4.x-green?style=for-the-badge&logo=opencv)
+![SQLite](https://img.shields.io/badge/SQLite-3-blue?style=for-the-badge&logo=sqlite)
+![Status](https://img.shields.io/badge/Status-Completed-success?style=for-the-badge)
+
 
 ---
 
